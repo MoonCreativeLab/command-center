@@ -1,12 +1,12 @@
-# Mirador
+# Dashboard
 
 A small, self-contained illustrative web demo — a "dispatcher's wall" for the first mile of
 shrimp production. Four screens: a **Status** hub, a transit-style **Routes** diagram, a
 **Satellite** farm view, and a delivery **Scorecard**. Vanilla HTML/JS + `<canvas>`, no build step
 to *run* it, works offline.
 
-(The repository is still named `command-center`, the demo's original name, so the published URL
-stays stable for anyone who already has the link.)
+(The repository keeps the name `command-center` deliberately — the demo has been renamed a few times
+and the published URL is pinned so any link already shared keeps working.)
 
 ## Password-gated
 
@@ -30,11 +30,11 @@ In short: the plaintext never leaves the private repo; only ciphertext is ever p
 1. Edit the plaintext source (in the private repo).
 2. Regenerate the encrypted page. The password is passed via an env var and is **never** committed:
    ```
-   MIR_PW='<deployment-password>' node build-encrypt.js source.html index.html
+   DASH_PW='<deployment-password>' node build-encrypt.js source.html index.html
    ```
 3. Commit the regenerated `index.html` here and push — GitHub Pages redeploys automatically.
 
-To change the password, just rebuild with a different `MIR_PW` and push.
+To change the password, just rebuild with a different `DASH_PW` and push.
 
 ## Running locally
 

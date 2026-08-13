@@ -1,14 +1,16 @@
 // Builds an encrypted, password-gated index.html from a plaintext HTML file.
 // AES-256-GCM, key = PBKDF2(password, salt, ITER, SHA-256). Public host holds only ciphertext.
-// Mirrors shrimpcity/build-encrypt.js; login card restyled for Command Center (clean light theme).
+// Mirrors shrimpcity/build-encrypt.js; login card restyled for Dashboard (clean light theme).
 const fs = require('fs');
 const crypto = require('crypto');
 
 const SRC = process.argv[2];
 const OUT = process.argv[3];
-const PW  = process.env.CC_PW || process.env.SC_PW;   // deployment password, never stored in git
+// DASH_PW is current; CC_PW/MIR_PW/SC_PW still work — the demo has been renamed three times and
+// the password never changed, so old muscle memory shouldn't fail a deploy.
+const PW  = process.env.DASH_PW || process.env.CC_PW || process.env.MIR_PW || process.env.SC_PW;
 const ITER = 200000;
-if (!SRC || !OUT || !PW) { console.error('usage: CC_PW=xxx node build-encrypt.js <src.html> <out.html>'); process.exit(1); }
+if (!SRC || !OUT || !PW) { console.error('usage: DASH_PW=xxx node build-encrypt.js <src.html> <out.html>'); process.exit(1); }
 
 const plaintext = fs.readFileSync(SRC, 'utf8');
 const salt = crypto.randomBytes(16);
@@ -32,8 +34,8 @@ const ENC = { salt: b64(salt), iv: b64(iv), data: b64(data), iter: ITER };
 const page = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Command Center</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><line x1='4' y1='12' x2='20' y2='12' stroke='%234263eb' stroke-width='2.4' stroke-linecap='round'/><circle cx='6' cy='12' r='2.6' fill='%234263eb'/><circle cx='12' cy='12' r='2.6' fill='%234263eb'/><circle cx='18' cy='12' r='2.6' fill='%234263eb'/></svg>">
+<title>Dashboard</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>%F0%9F%A6%90</text></svg>">
 <style>
   html,body{margin:0;height:100%}
   body{background:#f4f5f7;color:#1b2230;
@@ -41,7 +43,7 @@ const page = `<!doctype html>
     -webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh}
   .card{background:#fff;border:1px solid #e8eaf0;border-radius:16px;padding:30px 28px;width:320px;
     box-shadow:0 1px 2px rgba(16,24,40,.04),0 18px 44px rgba(16,24,40,.10);text-align:center}
-  .mark{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:11px;background:#eef1fe;color:#4263eb;margin-bottom:12px}
+  .mark{display:inline-grid;place-items:center;width:44px;height:44px;font-size:34px;line-height:1;margin-bottom:10px}
   .hd{font-size:20px;font-weight:700;letter-spacing:-.02em;margin:0}
   p{color:#6b7385;font-size:13px;margin:6px 0 18px}
   input{width:100%;box-sizing:border-box;font-family:inherit;font-size:15px;padding:11px 13px;
@@ -53,13 +55,8 @@ const page = `<!doctype html>
   #err{color:#e03131;font-size:12.5px;min-height:16px;margin-top:10px}
 </style>
 <div class="card">
-  <div class="mark">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-      <line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-      <circle cx="6" cy="12" r="2.6" fill="currentColor"/><circle cx="12" cy="12" r="2.6" fill="currentColor"/><circle cx="18" cy="12" r="2.6" fill="currentColor"/>
-    </svg>
-  </div>
-  <h1 class="hd">Command Center</h1>
+  <div class="mark">🦐</div>
+  <h1 class="hd">Dashboard</h1>
   <p>Enter password to view.</p>
   <input id="pw" type="password" autofocus autocomplete="off" spellcheck="false">
   <button id="go">Enter</button>
